@@ -1,15 +1,32 @@
 import React, { Component } from 'react';
 import logo from "./../../assets/imgs/logo.png"
 import './login.less'
-import { Form, Input, Button } from 'antd';
+import { Form, Input, Button ,message} from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
+import { Redirect } from 'react-router-dom';
+import {reqLogin} from '../../api/index'
+import memoryUtils from '../../utils/memoryUtils'
+import storageUtile from '../../utils/storageUtile'
 
 
 class login extends Component {
     render() {
+        const user = memoryUtils.user
+        if (user && user._id) {
+            return <Redirect to="/"></Redirect>
+        }
 
-        const onFinish = values => {
-            console.log('Received values of form: ', values);
+        const onFinish = async values => {
+            const {username,password} = values
+            const result = await reqLogin(username,password);
+            if (result.status === 0) {
+                message.success('登陆成功');
+                memoryUtils.user = result.data;
+                storageUtile.saveUser(result.data)
+                this.props.history.replace('/');
+            }else{
+                message.error(result.msg)
+            }
         };
 
         return (
