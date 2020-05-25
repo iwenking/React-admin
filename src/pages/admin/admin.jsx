@@ -4,7 +4,6 @@ import memoryUtils from '../../utils/memoryUtils'
 import { Layout } from 'antd';
 import LeftNav from '../../componrts/left-nav/left-nav';
 import Header from '../../componrts/header/header';
-
 import Home from "../home/home";
 import Category from "../category/category";
 import Product from "../product/product";

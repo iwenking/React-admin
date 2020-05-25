@@ -1,16 +1,7 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom'
-import { Menu, Button } from 'antd';
-import {
-    AppstoreOutlined,
-    MenuUnfoldOutlined,
-    MenuFoldOutlined,
-    PieChartOutlined,
-    DesktopOutlined,
-    ContainerOutlined,
-    MailOutlined,
-} from '@ant-design/icons';
-
+import { Menu } from 'antd';
+import menuList from '../../config/menuConfig'
 import './index.less'
 
 
@@ -18,6 +9,25 @@ import './index.less'
 const { SubMenu } = Menu;
 
 class LeftNav extends Component {
+
+    getMenuNodes = (menuList) => {
+        return menuList.map(item => {
+            if (!item.children) {
+                return (
+                    <Menu.Item key={item.key} icon={item.icon}>
+                        <Link to={item.key}>{item.title}</Link>
+                    </Menu.Item>
+                )
+            } else {
+                return (
+                    <SubMenu key={item.key} title={item.title} icon={item.icon}>
+                        {this.getMenuNodes(item.children)}
+                    </SubMenu>
+                )
+            }
+        })
+    }
+
     render() {
         return (
             <div>
@@ -31,22 +41,9 @@ class LeftNav extends Component {
                     mode="inline"
                     theme="dark"
                 >
-                    <Menu.Item key="1" icon={<PieChartOutlined />}>
-                            首页
-                    </Menu.Item>
-                
-                    <SubMenu key="sub1" icon={<MailOutlined />} title="商品">
-                        <Menu.Item key="5" icon={<PieChartOutlined />}>品类管理</Menu.Item>
-                        <Menu.Item key="6" icon={<PieChartOutlined />}>商品管理</Menu.Item>
-                    </SubMenu>
-                    <SubMenu key="sub2" icon={<AppstoreOutlined />} title="Navigation Two">
-                        <Menu.Item key="9" icon={<PieChartOutlined />}>Option 9</Menu.Item>
-                        <Menu.Item key="10" icon={<PieChartOutlined />}>Option 10</Menu.Item>
-                        <SubMenu key="sub3" title="Submenu">
-                            <Menu.Item key="11">Option 11</Menu.Item>
-                            <Menu.Item key="12">Option 12</Menu.Item>
-                        </SubMenu>
-                    </SubMenu>
+                    {
+                        this.getMenuNodes(menuList)
+                    }
                 </Menu>
             </div>
         );
