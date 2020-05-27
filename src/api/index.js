@@ -4,5 +4,3 @@
 import api from './api'
 //登录
 export const reqLogin = (username, password) => api('/login', { username, password }, 'POST')
-
-

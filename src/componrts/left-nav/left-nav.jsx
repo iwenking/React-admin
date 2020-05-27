@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom'
+import { Link , withRouter} from 'react-router-dom'
 import { Menu } from 'antd';
 import menuList from '../../config/menuConfig'
 import './index.less'
@@ -11,6 +11,7 @@ const { SubMenu } = Menu;
 class LeftNav extends Component {
 
     getMenuNodes = (menuList) => {
+        const path = this.props.location.pathname;
         return menuList.map(item => {
             if (!item.children) {
                 return (
@@ -19,6 +20,11 @@ class LeftNav extends Component {
                     </Menu.Item>
                 )
             } else {
+
+                const cItem = item.children.find(cItem => cItem.key === path); 
+                if (cItem) {
+                    this.openKey = item.key;
+                }
                 return (
                     <SubMenu key={item.key} title={item.title} icon={item.icon}>
                         {this.getMenuNodes(item.children)}
@@ -28,7 +34,15 @@ class LeftNav extends Component {
         })
     }
 
+    componentWillMount(){
+        this.meunNodes = this.getMenuNodes(menuList)
+    }
+
     render() {
+
+        const path = this.props.location.pathname;
+        const openKey = this.openKey;
+
         return (
             <div>
                 <Link className="left-nav" to="/">
@@ -40,9 +54,11 @@ class LeftNav extends Component {
                 <Menu
                     mode="inline"
                     theme="dark"
+                    selectedKeys={[path]}
+                    defaultOpenKeys = {[openKey]}
                 >
                     {
-                        this.getMenuNodes(menuList)
+                        this.meunNodes
                     }
                 </Menu>
             </div>
@@ -50,4 +66,4 @@ class LeftNav extends Component {
     }
 }
 
-export default LeftNav;
+export default withRouter(LeftNav);
