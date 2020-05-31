@@ -48,7 +48,6 @@ class LeftNav extends Component {
                 <Link className="left-nav" to="/">
                     <header className="left-nav-header">
                         <img src="/images/logo.png" alt="logo" />
-                        <h1>管理后台</h1>
                     </header>
                 </Link>
                 <Menu
