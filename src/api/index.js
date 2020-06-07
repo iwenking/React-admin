@@ -9,5 +9,5 @@ export const reqCategorys = (parentId) => api('/manage/category/list', { parentI
 //添加分类
 export const reqAddCategory = (parentId ,categoryName) => api('/manage/category/add', { parentId,categoryName }, 'POST')
 //更新分类
-export const reqUpdateCategory = (parentId ,categoryName) => api('/manage/category/update', { parentId,categoryName }, 'POST')
+export const reqUpdateCategory = (categoryId ,categoryName) => api('/manage/category/update', { categoryId,categoryName }, 'POST')
 

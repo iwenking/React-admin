@@ -1,9 +1,14 @@
 import React, { Component } from 'react';
-import { Form, Input, Select, Modal } from 'antd';
+import { Form, Input, Modal } from 'antd';
+import PropType from 'prop-types'
 
-const { Option, OptGroup } = Select;
 
-class AddForm extends Component {
+class UpdateForm extends Component {
+
+    static propType = {
+        category: PropType.string.isRequire,
+        updateCategory:PropType.func.isRequire
+    }
 
     formRef = React.createRef();
 
@@ -15,37 +20,32 @@ class AddForm extends Component {
     handClick = (name, values) => {
         if (name === 'modalform') {
             Modal.destroyAll();
-            console.log('结果', values.values, values.forms);
+            
+            this.props.updateCategory(values.values.inpitarf ? values.values.inpitarf : this.props.category.name)
         }
     }
 
     handleOk = () => {
         this.formRef.current.submit();
+        // this.formRef.current.resetFields();
     }
 
     render() {
-        const { showStatus } = this.props
+        const { showStatus, category } = this.props
 
         return (
 
             <Form.Provider onFormFinish={this.handClick}>
                 <Modal
-                    title="添加分类"
-                    visible={showStatus === 1}
+                    title="更新分类"
+                    visible={showStatus === 3}
                     onOk={this.handleOk}
                     onCancel={this.handleCancel}
                 >
                     <Form name='modalform' ref={this.formRef}>
-                        <Form.Item name="selectoption">
-                            <Select defaultValue="lucy" style={{ width: '100%' }}>
-                                    
-                            </Select>
-                        </Form.Item>
-
                         <Form.Item name="inpitarf">
-                            <Input placeholder='请输入分类名称' />
+                            <Input placeholder='请输入分类名称' defaultValue={category.name} />
                         </Form.Item>
-
                     </Form>
                 </Modal>
             </Form.Provider>
@@ -53,4 +53,4 @@ class AddForm extends Component {
     }
 }
 
-export default AddForm;
+export default UpdateForm;

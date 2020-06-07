@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import { Card, Table, Button, message, Modal } from 'antd';
 import { PlusOutlined, ArrowRightOutlined } from '@ant-design/icons';
-import { reqCategorys } from '../../api'
+import { reqCategorys, reqUpdateCategory } from '../../api'
 import AddForm from './add-form'
+import UpdateForm from './updata-form'
 import './category.less'
 
 
@@ -28,7 +29,7 @@ class category extends Component {
                 width: 300,
                 render: (params) => (
                     <span>
-                        <i onClick={this.showUpdate}>修改分类</i>
+                        <i onClick={() => { this.showUpdate(params) }}>修改分类</i>
                         {this.state.parentId === '0' ? <i style={{ display: 'inline-block', marginLeft: '10px' }} onClick={() => { this.showSubCategorys(params) }}>查看子分类</i> : null}
                     </span>
                 ),
@@ -57,33 +58,33 @@ class category extends Component {
         console.log(this);
 
     }
-    showAdd = () => {
-        this.setState({ showStatus: 1 })
+    showAdd = (flage = true) => {
+
+        this.setState({ showStatus: flage ? 1 : 2 })
     }
-    showUpdate = () => {
+    showUpdate = (params) => {
+        this.category = params
+        this.setState({ showStatus: 3 })
+    }
+
+    updateCategory = async (params) => {
         this.setState({ showStatus: 2 })
-    }
-
-    addCategory = () => {
-        console.log(this.refs.addForm.getState());
+        const categoryId = this.category._id;
+        const categoryName = params;
         
-    }
-
-    updateCategory = () => {
-        this.setState({
-            showStatus: 2
-        })
-
+        const res = await reqUpdateCategory(categoryId, categoryName)
+        if(res.status === 0){
+            this.getCategorys()
+        }
     }
 
     handleCancel = () => {
-        Modal.destroyAll();
         this.setState({
             showStatus: 0,
         })
+        Modal.destroyAll();
     }
     showSubCategorys = (params) => {
-
         this.setState({
             parentId: params._id,
             parentName: params.name
@@ -113,7 +114,8 @@ class category extends Component {
     render() {
 
         const { categorys, loading, showStatus, subCategorys, parentId, parentName } = this.state
-
+        
+        const category = this.category || '';
         const title = parentId === '0' ? '一级分类列表' : (
             <span>
                 <i onClick={this.showFirstCategorys} style={{ marginRight: '10px' }}>一级分类列表</i>
@@ -133,22 +135,9 @@ class category extends Component {
                 <Card title={title} extra={<i>{extra}</i>}>
                     <Table rowKey="_id" loading={loading} bordered dataSource={parentId === '0' ? categorys : subCategorys} columns={this.columns} pagination={{ defaultCurrent: 5, showQuickJumper: true }} />
 
-                    <Modal
-                        title='添加分类'
-                        visible={showStatus === 1}
-                        onOk={this.addCategory}
-                        onCancel={this.handleCancel}
-                    >
-                        <AddForm ref='addForm' />
-                    </Modal>
+                    <AddForm showStatus={showStatus} showAdd={this.showAdd} />
 
-                    <Modal
-                        title="更新分类"
-                        visible={showStatus === 2}
-                        onOk={this.updateCategory}
-                        onCancel={this.handleCancel}
-                    >
-                    </Modal>
+                    <UpdateForm showStatus={showStatus} category={category} showAdd={this.showAdd} updateCategory={this.updateCategory} />
                 </Card>
             </div>
         );
