@@ -20,7 +20,6 @@ class UpdateForm extends Component {
     handClick = (name, values) => {
         if (name === 'modalform') {
             Modal.destroyAll();
-            
             this.props.updateCategory(values.values.inpitarf ? values.values.inpitarf : this.props.category.name)
         }
     }
@@ -43,7 +42,7 @@ class UpdateForm extends Component {
                     onCancel={this.handleCancel}
                 >
                     <Form name='modalform' ref={this.formRef}>
-                        <Form.Item name="inpitarf">
+                        <Form.Item name="inpitarf" rules={[{ required: true, message: '分类名称必须输入' }]}>
                             <Input placeholder='请输入分类名称' defaultValue={category.name} />
                         </Form.Item>
                     </Form>

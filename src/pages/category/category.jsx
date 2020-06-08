@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Card, Table, Button, message, Modal } from 'antd';
 import { PlusOutlined, ArrowRightOutlined } from '@ant-design/icons';
-import { reqCategorys, reqUpdateCategory } from '../../api'
+import { reqCategorys, reqUpdateCategory, reqAddCategory } from '../../api'
 import AddForm from './add-form'
 import UpdateForm from './updata-form'
 import './category.less'
@@ -36,9 +36,9 @@ class category extends Component {
             },
         ];
     }
-    getCategorys = async () => {
+    getCategorys = async (params) => {
         // this.setState({ loading: true })
-        const { parentId } = this.state;
+        const parentId = params || this.state.parentId;
         const data = await reqCategorys(parentId)
         if (data.status === 0) {
             const categorys = data.data;
@@ -71,10 +71,25 @@ class category extends Component {
         this.setState({ showStatus: 2 })
         const categoryId = this.category._id;
         const categoryName = params;
-        
+
         const res = await reqUpdateCategory(categoryId, categoryName)
-        if(res.status === 0){
+        if (res.status === 0) {
             this.getCategorys()
+        }
+    }
+
+    addCategory = async (params) => {
+        const { parentId, categoryName } = params
+        this.setState({
+            showStatus: 0,
+        })
+        const res = await reqAddCategory(parentId, categoryName)
+        if (res.status === 0) {
+            if (parentId === this.state.parentId) {
+                this.getCategorys()
+            } else if (parentId === '0') {
+                this.getCategorys('0')
+            }
         }
     }
 
@@ -114,7 +129,7 @@ class category extends Component {
     render() {
 
         const { categorys, loading, showStatus, subCategorys, parentId, parentName } = this.state
-        
+
         const category = this.category || '';
         const title = parentId === '0' ? '一级分类列表' : (
             <span>
@@ -135,7 +150,7 @@ class category extends Component {
                 <Card title={title} extra={<i>{extra}</i>}>
                     <Table rowKey="_id" loading={loading} bordered dataSource={parentId === '0' ? categorys : subCategorys} columns={this.columns} pagination={{ defaultCurrent: 5, showQuickJumper: true }} />
 
-                    <AddForm showStatus={showStatus} showAdd={this.showAdd} />
+                    <AddForm showStatus={showStatus} showAdd={this.showAdd} categorys={categorys} parentId={parentId} addCategory={this.addCategory} />
 
                     <UpdateForm showStatus={showStatus} category={category} showAdd={this.showAdd} updateCategory={this.updateCategory} />
                 </Card>
