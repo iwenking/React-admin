@@ -1,12 +1,16 @@
 import React, { Component } from 'react';
 import { Card, Select, Button, Input, Table } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
+import { reqProducts } from '../../api/index'
+import { PAGE_SIZE } from '../../utils/constants'
+
 const Option = Select.Option;
 
 class ProductHome extends Component {
 
     state = {
-        products: []
+        products: [],
+        total: 0
     }
 
     initColumns = () => {
@@ -25,7 +29,7 @@ class ProductHome extends Component {
                 render: (price) => '￥' + price
             },
             {
-                width:100,
+                width: 100,
                 title: '状态',
                 dataIndex: 'status',
                 render: (status) => {
@@ -50,13 +54,27 @@ class ProductHome extends Component {
             },
         ];
     }
+    getProducts = async (pageNum = 1) => {
+        const res = await reqProducts(pageNum, PAGE_SIZE);
+        if (res.status === 0) {
+            const { total, list } = res.data;
+            this.setState({
+                total,
+                products: list
+            })
+        }
+    }
 
     componentWillMount() {
         this.initColumns()
     }
 
+    componentDidMount() {
+        this.getProducts()
+    }
+
     render() {
-        const { products } = this.state;
+        const { products, total } = this.state;
 
         const title = (
             <span>
@@ -79,7 +97,8 @@ class ProductHome extends Component {
         return (
             <div>
                 <Card title={title} extra={extra} >
-                    <Table dataSource={products} columns={this.columns} rowKey='_id' bordered />
+                    <Table dataSource={products} columns={this.columns} rowKey='_id' bordered
+                        pagination={{ defaultPageSize: PAGE_SIZE, showQuickJumper: true, total: total, onChange: this.getProducts }}/>
                 </Card>
             </div>
         );
