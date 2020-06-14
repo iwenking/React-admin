@@ -12,3 +12,10 @@ export const reqAddCategory = (parentId, categoryName) => api('/manage/category/
 export const reqUpdateCategory = (categoryId, categoryName) => api('/manage/category/update', { categoryId, categoryName }, 'POST')
 //获取商品分页列表
 export const reqProducts = (pageNum, pageSize) => api('/manage/product/list', { pageNum, pageSize }, 'GET')
+//搜索商品分页列表
+export const reqSearchProducts = ({ pageNum, pageSize, searchName, seachType }) => api('/manage/product/search', { pageNum, pageSize, [seachType]: searchName }, 'GET')
+//获取分类
+export const reqCategory = (categoryId) => api('/manage/category/info', { categoryId }, 'GET')
+//更新商品的状态
+export const reqUpdateStatus = (productId, status) => api('/manage/product/updateStatus', { productId, status }, 'POST')
+

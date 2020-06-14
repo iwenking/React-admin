@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import { Card, Select, Button, Input, Table } from 'antd';
+import { Card, Select, Button, Input, Table, message } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
-import { reqProducts } from '../../api/index'
+import { reqProducts, reqSearchProducts, reqUpdateStatus } from '../../api/index'
 import { PAGE_SIZE } from '../../utils/constants'
 
 const Option = Select.Option;
@@ -10,7 +10,9 @@ class ProductHome extends Component {
 
     state = {
         products: [],
-        total: 0
+        total: 0,
+        searchName: '',
+        seachType: 'productName',
     }
 
     initColumns = () => {
@@ -31,22 +33,23 @@ class ProductHome extends Component {
             {
                 width: 100,
                 title: '状态',
-                dataIndex: 'status',
-                render: (status) => {
+                render: (product) => {
+                    const { status, _id } = product;
+                    const newStatus = status === 1 ? 2 : 1;
                     return (
                         <span>
-                            <Button type='primary'>下架</Button>
-                            <span>在售</span>
+                            <Button type='primary' onClick={()=>this.updataStatus(_id, newStatus)}>{status === 1 ? '下架' : '上架'}</Button>
+                            <span>{status === 1 ? '在售' : '已下架'}</span>
                         </span>
                     )
                 }
             },
             {
                 title: '操作',
-                render: () => {
+                render: (product) => {
                     return (
                         <span>
-                            <i>详情</i>
+                            <i onClick={() => this.props.history.push('/product/detail', { product })}>详情</i><br />
                             <i>修改</i>
                         </span>
                     )
@@ -55,13 +58,31 @@ class ProductHome extends Component {
         ];
     }
     getProducts = async (pageNum = 1) => {
-        const res = await reqProducts(pageNum, PAGE_SIZE);
+        this.pageNum = pageNum
+        const { searchName, seachType } = this.state;
+        let res;
+        if (searchName) {
+            res = await reqSearchProducts({ pageNum, pageSize: PAGE_SIZE, searchName, seachType })
+        } else {
+            res = await reqProducts(pageNum, PAGE_SIZE);
+        }
+
+
+
         if (res.status === 0) {
             const { total, list } = res.data;
             this.setState({
                 total,
                 products: list
             })
+        }
+    }
+
+    updataStatus = async(productId, status) => {
+        const res = await reqUpdateStatus(productId, status);
+        if (res.status === 0) {
+            message.success('更新商品成功');
+            this.getProducts(this.pageNum)
         }
     }
 
@@ -74,21 +95,21 @@ class ProductHome extends Component {
     }
 
     render() {
-        const { products, total } = this.state;
+        const { products, total, searchName, seachType } = this.state;
 
         const title = (
             <span>
-                <Select style={{ width: 150 }}>
-                    <Option value='1'>按名称搜索</Option>
-                    <Option value='2'>按描叙搜索</Option>
+                <Select defaultValue={seachType} style={{ width: 150 }} onChange={value => this.setState({ seachType: value })}>
+                    <Option value='productName'>按名称搜索</Option>
+                    <Option value='productDesc'>按描叙搜索</Option>
                 </Select>
-                <Input placeholder='关键字' style={{ width: 150, margin: '0 15px' }} />
-                <Button type='primary'>搜索</Button>
+                <Input placeholder='关键字' style={{ width: 150, margin: '0 15px' }} defaultValue={searchName} onChange={event => this.setState({ searchName: event.target.value })} />
+                <Button type='primary' onClick={() => { this.getProducts() }}>搜索</Button>
             </span>
         )
 
         const extra = (
-            <Button type='primary'>
+            <Button type='primary' onClick={() => this.props.history.push('/product/addUpate')}>
                 <PlusOutlined />
                 添加商品
             </Button>
@@ -98,7 +119,7 @@ class ProductHome extends Component {
             <div>
                 <Card title={title} extra={extra} >
                     <Table dataSource={products} columns={this.columns} rowKey='_id' bordered
-                        pagination={{ defaultPageSize: PAGE_SIZE, showQuickJumper: true, total: total, onChange: this.getProducts }}/>
+                        pagination={{ defaultPageSize: PAGE_SIZE, showQuickJumper: true, total: total, onChange: this.getProducts }} />
                 </Card>
             </div>
         );

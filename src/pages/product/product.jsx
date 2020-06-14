@@ -3,6 +3,7 @@ import { Switch, Route ,Redirect} from 'react-router-dom'
 import ProductHome from'./home'
 import addUpate from './addUpate'
 import detail from './detail'
+import './product.less'
 
 class product extends Component {
     render() {

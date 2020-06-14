@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Link , withRouter} from 'react-router-dom'
+import { Link, withRouter } from 'react-router-dom'
 import { Menu } from 'antd';
 import menuList from '../../config/menuConfig'
 import './index.less'
@@ -21,7 +21,7 @@ class LeftNav extends Component {
                 )
             } else {
 
-                const cItem = item.children.find(cItem => cItem.key === path); 
+                const cItem = item.children.find(cItem => path.indexOf(cItem.key) === 0);
                 if (cItem) {
                     this.openKey = item.key;
                 }
@@ -34,13 +34,17 @@ class LeftNav extends Component {
         })
     }
 
-    componentWillMount(){
+    componentWillMount() {
         this.meunNodes = this.getMenuNodes(menuList)
     }
 
     render() {
 
-        const path = this.props.location.pathname;
+        let path = this.props.location.pathname;
+        if (path.indexOf('/product') === 0) {
+            path = '/product'
+        }
+
         const openKey = this.openKey;
 
         return (
@@ -54,7 +58,7 @@ class LeftNav extends Component {
                     mode="inline"
                     theme="dark"
                     selectedKeys={[path]}
-                    defaultOpenKeys = {[openKey]}
+                    defaultOpenKeys={[openKey]}
                 >
                     {
                         this.meunNodes
