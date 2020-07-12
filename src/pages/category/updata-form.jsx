@@ -41,9 +41,14 @@ class UpdateForm extends Component {
                     onOk={this.handleOk}
                     onCancel={this.handleCancel}
                 >
-                    <Form name='modalform' ref={this.formRef}>
+                    <Form name='modalform' ref={this.formRef} 
+                        initialValues={{
+                            inpitarf: category.name,
+                            
+                        }}
+                    >
                         <Form.Item name="inpitarf" rules={[{ required: true, message: '分类名称必须输入' }]}>
-                            <Input placeholder='请输入分类名称' defaultValue={category.name} />
+                            <Input placeholder='请输入分类名称' />
                         </Form.Item>
                     </Form>
                 </Modal>

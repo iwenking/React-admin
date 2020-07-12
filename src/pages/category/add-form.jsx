@@ -50,9 +50,14 @@ class AddForm extends Component {
                     onOk={this.handleOk}
                     onCancel={this.handleCancel}
                 >
-                    <Form name='modalform' ref={this.formRef}>
+                    <Form name='modalform' ref={this.formRef}
+                        initialValues={{
+                            parentId: parentId,
+                            
+                        }}
+                    >
                         <Form.Item name="parentId">
-                            <Select defaultValue={parentId} style={{ width: '100%' }}>
+                            <Select style={{ width: '100%' }}>
                                 <Option value='0'>一级分类</Option>
                                 {
                                     categorys.map(item =>

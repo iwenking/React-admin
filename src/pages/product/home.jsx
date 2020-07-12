@@ -38,7 +38,7 @@ class ProductHome extends Component {
                     const newStatus = status === 1 ? 2 : 1;
                     return (
                         <span>
-                            <Button type='primary' onClick={()=>this.updataStatus(_id, newStatus)}>{status === 1 ? '下架' : '上架'}</Button>
+                            <Button type='primary' onClick={() => this.updataStatus(_id, newStatus)}>{status === 1 ? '下架' : '上架'}</Button>
                             <span>{status === 1 ? '在售' : '已下架'}</span>
                         </span>
                     )
@@ -50,7 +50,7 @@ class ProductHome extends Component {
                     return (
                         <span>
                             <i onClick={() => this.props.history.push('/product/detail', { product })}>详情</i><br />
-                            <i>修改</i>
+                            <i onClick={() => this.props.history.push('/product/addUpate', product)}>修改</i>
                         </span>
                     )
                 }
@@ -78,7 +78,7 @@ class ProductHome extends Component {
         }
     }
 
-    updataStatus = async(productId, status) => {
+    updataStatus = async (productId, status) => {
         const res = await reqUpdateStatus(productId, status);
         if (res.status === 0) {
             message.success('更新商品成功');

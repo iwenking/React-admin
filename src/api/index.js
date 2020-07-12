@@ -18,4 +18,9 @@ export const reqSearchProducts = ({ pageNum, pageSize, searchName, seachType }) 
 export const reqCategory = (categoryId) => api('/manage/category/info', { categoryId }, 'GET')
 //更新商品的状态
 export const reqUpdateStatus = (productId, status) => api('/manage/product/updateStatus', { productId, status }, 'POST')
+//删除图片
+export const resDeleteImg = (name) => api('/manage/img/delete', { name }, 'POST');
+//添加商品
+export const resAddOrUpdateProduct = (product) => api('/manage/product/' + (product._id ? 'update' : 'add'), product, 'POST');
+
 
