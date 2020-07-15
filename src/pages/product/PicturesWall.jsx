@@ -60,7 +60,7 @@ class PicturesWall extends React.Component {
             const result = file.response;
             if (result.status === 0) {
                 message.success('上传图片成功!');
-                const { name, url } = result.data;
+                const { name } = result.data;
                 file = fileList[fileList.length - 1];
                 file.name = name;
             } else {

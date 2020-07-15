@@ -22,5 +22,12 @@ export const reqUpdateStatus = (productId, status) => api('/manage/product/updat
 export const resDeleteImg = (name) => api('/manage/img/delete', { name }, 'POST');
 //添加商品
 export const resAddOrUpdateProduct = (product) => api('/manage/product/' + (product._id ? 'update' : 'add'), product, 'POST');
+//获取所有角色列表
+export const reqRoles = () => api('/manage/role/list', 'GET')
+//获取添加角色
+export const reqAddRole = (roleName) => api('/manage/role/add', roleName,'POST')
+
+
+
 
 
