@@ -1986,7 +1986,7 @@ ansi-styles@^4.0.0, ansi-styles@^4.1.0:
     "@types/color-name" "^1.1.1"
     color-convert "^2.0.1"
 
-antd@^4.3.2:
+antd@^4.4.2:
   version "4.4.2"
   resolved "https://registry.npm.taobao.org/antd/download/antd-4.4.2.tgz?cache=0&sync_timestamp=1594457394307&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fantd%2Fdownload%2Fantd-4.4.2.tgz#0b55c0ecf1eec3ffc03c4351e787add3be2de664"
   integrity sha1-C1XA7PHuw//APENR54et074t5mQ=
