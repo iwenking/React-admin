@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import { formateDate } from '../../utils/dateUtils'
-import memoryUtils from '../../utils/memoryUtils'
-import storageUtile from '../../utils/storageUtile'
 import menuList from '../../config/menuConfig';
 import './index.less'
 import { withRouter } from 'react-router-dom';
-import { Modal} from 'antd';
+import { connect } from 'react-redux'
+import {logout} from '../../redux/actions'
+import { Modal } from 'antd';
 import { ExclamationCircleOutlined } from '@ant-design/icons';
 
 const { confirm } = Modal;
@@ -17,7 +17,7 @@ class header extends Component {
     }
 
     getTime = () => {
-       this.timer = setInterval(() => {
+        this.timer = setInterval(() => {
             const currentTime = formateDate(Date.now())
             this.setState({ currentTime })
         }, 1000);
@@ -39,15 +39,13 @@ class header extends Component {
         return title
 
     }
+
     logout = () => {
         confirm({
             icon: <ExclamationCircleOutlined />,
             content: '确定退出吗？',
             onOk: () => {
-                storageUtile.removeUser()
-                memoryUtils.user = {}
-
-                this.props.history.replace('/login');
+                this.props.logout()
             }
         });
     }
@@ -55,14 +53,15 @@ class header extends Component {
     componentDidMount() {
         this.getTime()
     }
-    componentWillUnmount(){
+    componentWillUnmount() {
         clearInterval(this.timer)
     }
 
     render() {
         const { currentTime } = this.state;
-        const username = memoryUtils.user.username;
-        const title = this.getTitle()
+        const username = this.props.user.username;
+        // const title = this.getTitle()
+        const title = this.props.headTitle
         return (
             <div className='header'>
                 <div className="header-top">
@@ -80,4 +79,7 @@ class header extends Component {
     }
 }
 
-export default withRouter(header);
+export default connect(
+    state => ({ headTitle: state.headTitle ,user:state.user}),
+    {logout}
+)(withRouter(header));

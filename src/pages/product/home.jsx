@@ -119,7 +119,7 @@ class ProductHome extends Component {
             <div>
                 <Card title={title} extra={extra} >
                     <Table dataSource={products} columns={this.columns} rowKey='_id' bordered
-                        pagination={{ defaultPageSize: PAGE_SIZE, showQuickJumper: true, total: total, onChange: this.getProducts }} />
+                        pagination={{ defaultPageSize: PAGE_SIZE, showQuickJumper: true, total: total, onChange: this.getProducts ,current:this.pageNum}} />
                 </Card>
             </div>
         );

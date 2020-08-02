@@ -38,7 +38,7 @@ class rolePerm extends Component {
 
     getTreeData = () => {
         let treeData = [];
-        menuList.map((item, index) => {
+        menuList.forEach((item, index) => {
             treeData.push({
                 title: item.title,
                 key: item.key,
@@ -46,7 +46,7 @@ class rolePerm extends Component {
 
             if (!!item.children) {
                 treeData[index].children = []
-                item.children.map(idx => {
+                item.children.forEach(idx => {
                     treeData[index].children.push({
                         title: idx.title,
                         key: idx.key,

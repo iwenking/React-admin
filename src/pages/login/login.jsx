@@ -1,32 +1,30 @@
 import React, { Component } from 'react';
 import logo from "./../../assets/imgs/logo.png"
 import './login.less'
-import { Form, Input, Button ,message} from 'antd';
+import { Form, Input, Button, message } from 'antd';
+import { connect } from 'react-redux'
+import { Login } from '../../redux/actions'
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import { Redirect } from 'react-router-dom';
-import {reqLogin} from '../../api/index'
-import memoryUtils from '../../utils/memoryUtils'
-import storageUtile from '../../utils/storageUtile'
 
 
 class login extends Component {
     render() {
-        const user = memoryUtils.user
+        // const user = memoryUtils.user
+        const user = this.props.user
         if (user && user._id) {
-            return <Redirect to="/"></Redirect>
+            return <Redirect to="/home"></Redirect>
         }
 
-        const onFinish = async values => {
-            const {username,password} = values
-            const result = await reqLogin(username,password);
-            if (result.status === 0) {
-                message.success('登陆成功');
-                memoryUtils.user = result.data;
-                storageUtile.saveUser(result.data)
-                this.props.history.replace('/');
-            }else{
-                message.error(result.msg)
-            }
+        const errorMsg = this.props.user.errorMsg
+        if (errorMsg) {
+            message.error(errorMsg)
+        }
+
+        const onFinish = values => {
+            const { username, password } = values
+            this.props.Login(username, password)
+
         };
 
         return (
@@ -77,4 +75,7 @@ class login extends Component {
 }
 
 
-export default login;
+export default connect(
+    state => ({ user: state.user }),
+    { Login }
+)(login);

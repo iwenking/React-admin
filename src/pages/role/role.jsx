@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import { Card, Table, Button, message } from 'antd';
+import { connect } from 'react-redux'
 import { reqRoles, reqAddRole, reqUpdataRole } from '../../api'
+import { logout } from '../../redux/actions'
 import { formateDate } from '../../utils/dateUtils'
 import memoryUtils from "../../utils/memoryUtils";
-import storageUtile from "../../utils/storageUtile";
 import AddForm from './AddFrom'
 import RolePerm from './rolePerm'
 
@@ -88,13 +89,11 @@ class role extends Component {
         const result = await reqUpdataRole(params);
 
         if (result.status === 0) {
-            
+
             this.updateRole(false)
 
-            if (params._id === memoryUtils.user.role_id) {
-                console.log('aaaa');
-                memoryUtils.user = {}
-                storageUtile.removeUser()
+            if (params._id === this.props.user.role_id) {
+                this.props.logout()
                 this.props.history.replace('/login')
                 message.success('当前角色权限修改成功,请重新登录!')
             } else {
@@ -132,7 +131,16 @@ class role extends Component {
                         dataSource={roles}
                         columns={this.columns}
                         pagination={{ defaultCurrent: 5, showQuickJumper: true }}
-                        rowSelection={{ type: 'radio', selectedRowKeys: [role._id] }}
+                        rowSelection={{
+                            type: 'radio',
+                            selectedRowKeys: [role._id],
+                            onSelect: (role) => {
+                                this.setState({
+                                    role
+                                })
+                            }
+
+                        }}
                         onRow={this.onRow}
                     />
                     <AddForm isShowAdd={isShowAdd} showAdd={this.showAdd} AddRole={this.AddRole} />
@@ -143,4 +151,7 @@ class role extends Component {
     }
 }
 
-export default role;
+export default connect(
+    state => ({ user: state.user }),
+    { logout }
+)(role);
