@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Redirect, Route, Switch } from 'react-router-dom'
-import {connect} from 'react-redux'
+import { connect } from 'react-redux'
 import { Layout } from 'antd';
 import LeftNav from '../../componrts/left-nav/left-nav';
 import Header from '../../componrts/header/header';
@@ -12,13 +12,14 @@ import User from "../user/user";
 import Bar from "../charts/bar";
 import Pie from "../charts/pie";
 import Line from "../charts/line";
+import NotFound from '../NotFound/NotFound';
 
 const { Sider, Content } = Layout;
 
 class admin extends Component {
 
     render() {
-        const user =this.props.user;
+        const user = this.props.user;
 
         if (!user || !user._id) {
             return <Redirect to="/login"></Redirect>
@@ -30,8 +31,9 @@ class admin extends Component {
                 </Sider>
                 <Layout>
                     <Header></Header>
-                    <Content style={{ backgroundColor: "#fff",margin:20 }}>
+                    <Content style={{ backgroundColor: "#fff", margin: 20 }}>
                         <Switch>
+                            <Redirect from='/' exact to='/home' />
                             <Route path='/home' component={Home}></Route>
                             <Route path='/category' component={Category}></Route>
                             <Route path='/product' component={Product}></Route>
@@ -40,7 +42,7 @@ class admin extends Component {
                             <Route path='/bar' component={Bar}></Route>
                             <Route path='/pie' component={Pie}></Route>
                             <Route path='/line' component={Line}></Route>
-                            <Redirect to="/home"></Redirect>
+                            <Route component={NotFound} />
                         </Switch>
                     </Content>
                 </Layout>
@@ -50,6 +52,6 @@ class admin extends Component {
 }
 
 export default connect(
-    state =>({user:state.user}),
+    state => ({ user: state.user }),
     {}
-    )(admin);
+)(admin);

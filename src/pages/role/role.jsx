@@ -4,7 +4,6 @@ import { connect } from 'react-redux'
 import { reqRoles, reqAddRole, reqUpdataRole } from '../../api'
 import { logout } from '../../redux/actions'
 import { formateDate } from '../../utils/dateUtils'
-import memoryUtils from "../../utils/memoryUtils";
 import AddForm from './AddFrom'
 import RolePerm from './rolePerm'
 
